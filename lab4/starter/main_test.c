@@ -19,51 +19,17 @@
 
 int main(int argc, char *argv[])
 {
-	int num = 0;
-	int algo = 0; // default algorithm to test is best fit  
-	void *p, *q;
-
-	if (argc != 2) {
-		fprintf(stderr, "Usage: %s <0/1>. 0 for best fit and 1 for worst fit \n", argv[0]);
-		exit (1);
-	} else if (!strcmp(argv[1], "1") || !strcmp(argv[1], "0")) {
-		algo = atoi(argv[1]);
-	} else {
-		fprintf(stderr, "Invalid argument, please specify 0 or 1\n");
-		exit(1);
-	}
-	
-	if ( algo == 0 ) {
-		/*
-		best_fit_memory_init(1024);	// initizae 1KB, best fit
-
-		p = best_fit_alloc(8);		// allocate 8B
-		printf("best fit: p=%p\n", p);
-		if ( p != NULL ) {
-			best_fit_dealloc(p);	
-		}
-		num = best_fit_count_extfrag(4);
-		*/
-		//memoryIsAllocated();
-		//reuseDeallocMem();
-		//noBestFit();
-        bestFitVsWorstFitTest2();
-	} else if ( algo == 1 ) {
-
-	//	worst_fit_memory_init(1024);	// initizae 1KB, worst fit
-
-	//	q = worst_fit_alloc(8);		// allocate 8B
-	//	printf("worst fit: q=%p\n", q);
-	//	if ( q != NULL ) {
-	//		worst_fit_dealloc(q);	
-	//	}
-		num = worst_fit_count_extfrag(4);
-	} else {
-		fprintf(stderr, "Should not reach here!\n");
-		exit(1);
-	}
-
-	//printf("num = %d\n", num);
+	invalidInitSizeTestBF();
+	memoryIsAllocated();
+	reuseDeallocMem();
+	noBestFit();
+	deallocNonExistingBlock();
+	test1_bf();
+	test1_wf()
+	test2_bf();
+	test2_wf();
+	bestFitVsWorstFitTest1();
+	bestFitVsWorstFitTest2();
 
 	return 0;
 }
@@ -180,6 +146,102 @@ void deallocNonExistingBlock() {
 	num = best_fit_count_extfrag(11);
 	printf("number of free blocks less than 11 after deallocating a non existing  block: %d\n", num);
 
+}
+
+/*
+	TEST 1: 
+
+	Tests if the system can handle an invalid memory block size. The size 
+	must be large enough to fit at least one control block. 
+*/
+void test1_bf() {
+	int initVal;
+
+	initVal = best_fit_memory_init(3);
+
+	if (initVal == -1) {
+		printf("PASSED Test1 - Best Fit\n");
+	} else {
+		printf("FAILED Test1 - Best Fit");
+	}
+}
+
+void test1_wf() {
+	int initVal;
+
+	initVal = worst_fit_memory_init(3);
+
+	if (initVal == -1) {
+		printf("PASSED Test1 - Worst Fit\n");
+	} else {
+		printf("FAILED Test1 - Worst Fit");
+	}
+}
+
+void test2_bf() {
+	int initVal, num;
+	void* p1,*p2;
+	
+	initVal = best_fit_memory_init(1024);
+
+	if(initVal == 0) {
+		p1 = best_fit_alloc(8);
+		if (p1 != NULL) {
+			num = best_fit_count_extfrag(1001);			
+			p2 = best_fit_alloc(6);
+			
+			if (p2 != NULL) {
+				num = best_fit_count_extfrag(1001);
+				
+				best_fit_dealloc(p1);
+				best_fit_dealloc(p2);
+
+				num = best_fit_count_extfrag(1001);
+				printf("PASSED Test2 - Best Fit\n");
+			}else {
+				printf("FAILED Test2 - Best Fit - failed to initialize memory - failed to allocate memory for best fit\n");
+			}	
+					
+		}else {
+			printf("FAILED Test2 - Best Fit - failed to initialize memory - failed to allocate memory for best fit");
+		}
+		
+	}else {
+		printf("FAILED Test2 - Best Fit - failed to initialize memory");
+	}
+}
+
+void test2_wf() {
+	int initVal, num;
+	void* p1,*p2;
+	
+	initVal = best_fit_memory_init(1024);
+
+	if(initVal == 0) {
+		p1 = best_fit_alloc(8);
+		if (p1 != NULL) {
+			num = best_fit_count_extfrag(1001);
+			p2 = best_fit_alloc(6);
+			
+			if (p2 != NULL) {
+				num = best_fit_count_extfrag(1001);
+				
+				best_fit_dealloc(p1);
+				best_fit_dealloc(p2);
+
+				num = best_fit_count_extfrag(1001);
+				printf("PASSED Test2 - Worst Fit\n");
+			}else {
+				printf("FAILED Test2 - Worst Fit - failed to initialize memory - failed to allocate memory for best fit\n");
+			}	
+					
+		}else {
+			printf("FAILED Test2 - Worst Fit - failed to initialize memory - failed to allocate memory for best fit");
+		}
+		
+	}else {
+		printf("FAILED Test2 - Worst Fit - failed to initialize memory");
+	}
 }
 
 void bestFitVsWorstFitTest1() {
