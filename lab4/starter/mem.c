@@ -3,7 +3,7 @@
  * @brief: ECE254 Lab: memory allocation algorithm comparison template file
  * @author: 
  */
- * @date: 2015-11-20
+// * @date: 2015-11-20
 
 /* includes */
 #include <stdio.h> 
@@ -146,7 +146,7 @@ void *worst_fit_alloc(size_t size)
 	printf("size of biggestNode node: %lu\n", (unsigned long) biggestNode->size);
 
 	if (thisSize == biggestNode->size) {
-		smallestNode->isFree = 0;
+		biggestNode->isFree = 0;
 	} else {
 		size_t remainingSize = biggestNode->size - thisSize;
 
@@ -305,7 +305,7 @@ int best_fit_count_extfrag(size_t size)
 	node_t* cur = bfHead;
 	int count = 0;
 	while (cur != NULL) {
-		printf("cur size: %lu\n", (unsigned long) cur->size);
+		printf("block size: %lu, block is free:  %d\n", (unsigned long) cur->size, cur->isFree);
 		if (cur->isFree == 1 && cur->size < size ) {
 			count += 1;
 		}
@@ -320,13 +320,14 @@ int worst_fit_count_extfrag(size_t size)
 	node_t* cur = wfHead;
 	int count = 0;
 	while (cur != NULL) {
-		printf("cur size: %lu\n", (unsigned long) cur->size);
+		printf("block size: %lu, block is free  %d\n ", (unsigned long) cur->size, cur->isFree);
 		if (cur->isFree == 1 && cur->size < size ) {
 			count += 1;
 		}
 		cur = cur->next;
 	}
-
-	return 0;
+	return count; 
+	
 }
+
 

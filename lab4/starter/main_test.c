@@ -47,16 +47,16 @@ int main(int argc, char *argv[])
 		//memoryIsAllocated();
 		//reuseDeallocMem();
 		//noBestFit();
-		deallocNonExistingBlock();
+        bestFitVsWorstFitTest2();
 	} else if ( algo == 1 ) {
 
-		worst_fit_memory_init(1024);	// initizae 1KB, worst fit
+	//	worst_fit_memory_init(1024);	// initizae 1KB, worst fit
 
-		q = worst_fit_alloc(8);		// allocate 8B
-		printf("worst fit: q=%p\n", q);
-		if ( q != NULL ) {
-			worst_fit_dealloc(q);	
-		}
+	//	q = worst_fit_alloc(8);		// allocate 8B
+	//	printf("worst fit: q=%p\n", q);
+	//	if ( q != NULL ) {
+	//		worst_fit_dealloc(q);	
+	//	}
 		num = worst_fit_count_extfrag(4);
 	} else {
 		fprintf(stderr, "Should not reach here!\n");
@@ -181,4 +181,71 @@ void deallocNonExistingBlock() {
 	printf("number of free blocks less than 11 after deallocating a non existing  block: %d\n", num);
 
 }
+
+void bestFitVsWorstFitTest1() {
+    void *p1, *p2;
+    void *pBf[10], *pWf[210];
+
+    best_fit_memory_init(2000);
+    worst_fit_memory_init(2000);
+    
+    p1 = best_fit_alloc(950);
+    p2 = worst_fit_alloc(950);
+    
+    best_fit_alloc(10);
+    worst_fit_alloc(10);
+
+    best_fit_dealloc(p1);
+    worst_fit_dealloc(p2);
+    
+    worst_fit_count_extfrag(100);
+    
+    for (int i = 0; i < 10; i ++ ){
+        pBf[i] = best_fit_alloc(50);
+        pWf[i] = worst_fit_alloc(50);
+    } 
+
+    int num;
+
+    num = best_fit_count_extfrag(600);
+    printf("best fit fragments smaller than 600  bytes:%d\n", num);
+    num = worst_fit_count_extfrag(600);
+    printf("worst fit fragments smaller than 600 bytes:%d\n", num);    
+        
+}
+void bestFitVsWorstFitTest2() {
+    void *pBf[10], *pWf[10];
+
+    best_fit_memory_init(2000);
+    worst_fit_memory_init(2000);
+
+    for (int i = 0; i < 10; i ++ ) {
+        pBf[i] = best_fit_alloc(50);
+        pWf[i] = worst_fit_alloc(50); 
+    }
+
+    for (int i = 0; i < 10; i += 2) {
+        best_fit_dealloc(pBf[i]);
+        worst_fit_dealloc(pWf[i]); 
+    }
+    int num;
+
+    num = best_fit_count_extfrag(10);
+    printf("\n");
+    num = worst_fit_count_extfrag(10);
+
+
+    for (int i = 0; i < 5; i ++ ) {
+        best_fit_alloc(20);
+        worst_fit_alloc(20);
+    }
+    printf("\nbest fit test:\n\n");
+    num = best_fit_count_extfrag(50);
+    printf("\nbest fit fragments smaller than 50 bytes: %d\n", num);
+    printf("\nworst fit test:\n\n");
+    num = worst_fit_count_extfrag(50);
+    printf("\nworst fit fragments smaller than 50 bytes: %d\n", num);
+}
+
+
 
