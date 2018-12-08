@@ -20,8 +20,8 @@ typedef struct node {
 }node_t;
 
 /* global variables */
-node_t* bfHead;
-node_t* wfHead;
+void* bfHead;
+void* wfHead;
 /* Functions */
 
 /* memory initializer */
@@ -30,12 +30,15 @@ int best_fit_memory_init(size_t size)
 
 	// To be completed by students
 	// You call malloc once here to obtain the memory to be managed.
+
+	// do not initialize memory unless the size given is greater than 4 byte
+	//plus the size of the linked list
 	if (size < sizeof(node_t) + 4) {
 		return -1;
 	}
 
 
-	bfHead = malloc(size);
+	bfHead = (node_t *) malloc(size);
 	bfHead->size = size - sizeof(node_t);
 	bfHead->isFree = 1;
 	bfHead->next = NULL;
@@ -55,7 +58,7 @@ int worst_fit_memory_init(size_t size)
 		return -1;
 	}
 
-	wfHead = malloc(size);
+	wfHead = (node_t *) malloc(size);
 	wfHead->size = size - sizeof(node_t);
 	wfHead->isFree = 1;
 	wfHead->next = NULL;
@@ -70,7 +73,7 @@ void *best_fit_alloc(size_t size)
 {
 	// To be completed by students
 	size_t thisSize = size;
-	node_t *cur = bfHead;
+	node_t *cur = (node_t *) bfHead;
 	
 	size_t minSize = 100000;
 	node_t* smallestNode = NULL;
@@ -125,7 +128,7 @@ void *worst_fit_alloc(size_t size)
 	// To be completed by students
 
 	size_t thisSize = size;
-	node_t *cur = wfHead;
+	node_t *cur = (node_t *) wfHead;
 	
 	size_t maxSize = 0;
 	node_t* biggestNode = NULL;
@@ -186,7 +189,7 @@ void best_fit_dealloc(void *ptr)
 	node_t* addressToFind = (node_t*) ((size_t)(ptr)- sizeof(node_t));
 
 	node_t* nodeToDealloc = NULL;
-	node_t* curNode = bfHead;
+	node_t* curNode = (node_t *) bfHead;
 
 	while (curNode != NULL) {
 		if (curNode == addressToFind) {
@@ -247,7 +250,7 @@ void worst_fit_dealloc(void *ptr)
 	node_t* addressToFind = (node_t*) ((size_t)(ptr)- sizeof(node_t));
 
 	node_t* nodeToDealloc = NULL;
-	node_t* curNode = wfHead;
+	node_t* curNode = (node_t *) wfHead;
 
 	while (curNode != NULL) {
 		if (curNode == addressToFind) {
@@ -302,7 +305,7 @@ void worst_fit_dealloc(void *ptr)
 int best_fit_count_extfrag(size_t size)
 {
 	// To be completed by students
-	node_t* cur = bfHead;
+	node_t* cur = (node_t *) bfHead;
 	int count = 0;
 	while (cur != NULL) {
 		printf("block size: %lu, block is free:  %d\n", (unsigned long) cur->size, cur->isFree);
@@ -317,7 +320,7 @@ int best_fit_count_extfrag(size_t size)
 int worst_fit_count_extfrag(size_t size)
 {
 	// To be completed by students
-	node_t* cur = wfHead;
+	node_t* cur = (node_t *) wfHead;
 	int count = 0;
 	while (cur != NULL) {
 		printf("block size: %lu, block is free  %d\n ", (unsigned long) cur->size, cur->isFree);
