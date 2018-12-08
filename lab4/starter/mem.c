@@ -38,11 +38,13 @@ int best_fit_memory_init(size_t size)
 	}
 
 
-	bfHead = (node_t *) malloc(size);
-	bfHead->size = size - sizeof(node_t);
-	bfHead->isFree = 1;
-	bfHead->next = NULL;
-	bfHead->prev = NULL;
+	bfHead = malloc(size);
+
+	node_t thisNode = (node_t *) bfHead;
+	thisNode->size = size - sizeof(node_t);
+	thisNode->isFree = 1;
+	thisNode->next = NULL;
+	thisNode->prev = NULL;
 
 	return 0;
 
@@ -58,11 +60,13 @@ int worst_fit_memory_init(size_t size)
 		return -1;
 	}
 
-	wfHead = (node_t *) malloc(size);
-	wfHead->size = size - sizeof(node_t);
-	wfHead->isFree = 1;
-	wfHead->next = NULL;
-	wfHead->prev = NULL;
+	wfHead = malloc(size);
+
+	node_t thisNode = (node_t *) wfHead;
+	thisNode->size = size - sizeof(node_t);
+	thisNode->isFree = 1;
+	thisNode->next = NULL;
+	thisNode->prev = NULL;
 
 	return 0;
 
