@@ -40,7 +40,7 @@ int best_fit_memory_init(size_t size)
 
 	bfHead = malloc(size);
 
-	node_t thisNode = (node_t *) bfHead;
+	node_t* thisNode = (node_t *) bfHead;
 	thisNode->size = size - sizeof(node_t);
 	thisNode->isFree = 1;
 	thisNode->next = NULL;
@@ -62,7 +62,7 @@ int worst_fit_memory_init(size_t size)
 
 	wfHead = malloc(size);
 
-	node_t thisNode = (node_t *) wfHead;
+	node_t* thisNode = (node_t *) wfHead;
 	thisNode->size = size - sizeof(node_t);
 	thisNode->isFree = 1;
 	thisNode->next = NULL;
